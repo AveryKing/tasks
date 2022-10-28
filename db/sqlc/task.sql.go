@@ -33,19 +33,35 @@ func (q *Queries) CreateTask(ctx context.Context, arg CreateTaskParams) (Task, e
 	return i, err
 }
 
-const getTasks = `-- name: GetTasks :one
+const getTasks = `-- name: GetTasks :many
 SELECT id, "user", title, priority, created_at FROM tasks WHERE "user" = $1
 `
 
-func (q *Queries) GetTasks(ctx context.Context, user int64) (Task, error) {
-	row := q.queryRow(ctx, q.getTasksStmt, getTasks, user)
-	var i Task
-	err := row.Scan(
-		&i.ID,
-		&i.User,
-		&i.Title,
-		&i.Priority,
-		&i.CreatedAt,
-	)
-	return i, err
+func (q *Queries) GetTasks(ctx context.Context, user int64) ([]Task, error) {
+	rows, err := q.query(ctx, q.getTasksStmt, getTasks, user)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Task{}
+	for rows.Next() {
+		var i Task
+		if err := rows.Scan(
+			&i.ID,
+			&i.User,
+			&i.Title,
+			&i.Priority,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

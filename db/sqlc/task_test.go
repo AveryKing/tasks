@@ -18,6 +18,7 @@ func createTestTask(t *testing.T, userId int64) Task {
 	task, err := testQueries.CreateTask(context.Background(), arg)
 
 	require.NoError(t, err)
+	require.NotEmpty(t, task)
 	require.Equal(t, arg.User, task.User)
 	require.Equal(t, arg.Title, task.Title)
 	require.Equal(t, arg.Priority, task.Priority)
@@ -35,8 +36,10 @@ func TestGetTasks(t *testing.T) {
 	task1 := createTestTask(t, user.ID)
 	task2 := createTestTask(t, user.ID)
 
-	require.NotEmpty(t, task1)
-	require.NotEmpty(t, task2)
-	require.Equal(t, task1.User, user.ID)
-	require.Equal(t, task2.User, user.ID)
+	tasks, err := testQueries.GetTasks(context.Background(), user.ID)
+
+	require.NoError(t, err)
+	require.NotEmpty(t, tasks)
+	require.EqualValues(t, task1, tasks[0])
+	require.EqualValues(t, task2, tasks[1])
 }
