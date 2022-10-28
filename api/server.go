@@ -19,6 +19,7 @@ func (server *Server) setupRouter() {
 	router.POST("/users", server.createUser)
 
 	router.POST("/tasks", server.createTask)
+	router.GET("/tasks", server.getTasks)
 
 	server.router = router
 }
