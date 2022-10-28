@@ -7,11 +7,10 @@ import (
 	"testing"
 )
 
-func createTestTask(t *testing.T) (task Task) {
-	user := createTestUser(t)
-
+// If userId is not nil, task will be created for the specified user
+func createTestTask(t *testing.T, userId int64) Task {
 	arg := CreateTaskParams{
-		User:     user.ID,
+		User:     userId,
 		Title:    util.RandomString(10),
 		Priority: 1,
 	}
@@ -22,9 +21,22 @@ func createTestTask(t *testing.T) (task Task) {
 	require.Equal(t, arg.User, task.User)
 	require.Equal(t, arg.Title, task.Title)
 	require.Equal(t, arg.Priority, task.Priority)
-	return
+	return task
 }
 
 func TestCreateTask(t *testing.T) {
-	createTestTask(t)
+	user := createTestUser(t)
+	createTestTask(t, user.ID)
+}
+
+func TestGetTasks(t *testing.T) {
+	user := createTestUser(t)
+
+	task1 := createTestTask(t, user.ID)
+	task2 := createTestTask(t, user.ID)
+
+	require.NotEmpty(t, task1)
+	require.NotEmpty(t, task2)
+	require.Equal(t, task1.User, user.ID)
+	require.Equal(t, task2.User, user.ID)
 }
