@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -16,8 +15,8 @@ VALUES ($1, $2) RETURNING id, username, password
 `
 
 type CreateUserParams struct {
-	Username sql.NullString `json:"username"`
-	Password string         `json:"password"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -31,7 +30,7 @@ const getUser = `-- name: GetUser :one
 SELECT id, username, password FROM users WHERE username = $1 LIMIT 1
 `
 
-func (q *Queries) GetUser(ctx context.Context, username sql.NullString) (User, error) {
+func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 	row := q.queryRow(ctx, q.getUserStmt, getUser, username)
 	var i User
 	err := row.Scan(&i.ID, &i.Username, &i.Password)

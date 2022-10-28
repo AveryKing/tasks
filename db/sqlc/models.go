@@ -5,7 +5,6 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -18,7 +17,7 @@ type Task struct {
 }
 
 type User struct {
-	ID       int64          `json:"id"`
-	Username sql.NullString `json:"username"`
-	Password string         `json:"password"`
+	ID       int64  `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
