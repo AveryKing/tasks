@@ -1,21 +1,19 @@
 package api
 
 import (
-	"database/sql"
 	db "github.com/AveryKing/tasks/db/sqlc"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 )
 
 type Server struct {
-	db      *sql.DB
 	queries *db.Queries
 	router  *gin.Engine
 }
 
-func NewServer(conn *sql.DB) (*Server, error) {
+func NewServer(queries *db.Queries) (*Server, error) {
 	server := &Server{
-		queries: db.New(conn),
+		queries: queries,
 	}
 
 	server.setupRouter()
