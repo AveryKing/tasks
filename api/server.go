@@ -21,8 +21,8 @@ func NewServer(queries *db.Queries) (*Server, error) {
 	return server, nil
 }
 
-func (server *Server) setupRouter() {
-	router := gin.Default()
+func (server *Server) setupRouter() (router *gin.Engine) {
+	router = gin.Default()
 
 	router.POST("/users", server.createUser)
 
@@ -30,6 +30,7 @@ func (server *Server) setupRouter() {
 	router.GET("/tasks", server.getTasks)
 
 	server.router = router
+	return
 }
 
 func (server *Server) Start(address string) error {
