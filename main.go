@@ -23,12 +23,6 @@ func main() {
 	}
 	testQueries := db.New(testDB)
 
-	//conn, err := sql.Open(config.DBDriver, config.DBSource)
-	//if err != nil {
-	//	log.Fatal("error connecting to db: ", err)
-	//}
-	//queries := db.Queries{}
-
 	server, err := api.NewServer(testQueries)
 	if err != nil {
 		log.Fatal("error creating gin server: ", err)
