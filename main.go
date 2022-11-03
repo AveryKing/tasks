@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"github.com/AveryKing/tasks/api"
+	db "github.com/AveryKing/tasks/db/sqlc"
 	"github.com/AveryKing/tasks/util"
 	"log"
 )
@@ -13,12 +14,22 @@ func main() {
 		log.Fatal("error loading config: ", err)
 	}
 
-	conn, err := sql.Open(config.DBDriver, config.DBSource)
+	var testDB *sql.DB
+
+	testDB, _ = sql.Open(config.DBDriver, config.DBSource)
+	err = testDB.Ping()
 	if err != nil {
 		log.Fatal("error connecting to db: ", err)
 	}
+	testQueries := db.New(testDB)
 
-	server, err := api.NewServer(conn)
+	//conn, err := sql.Open(config.DBDriver, config.DBSource)
+	//if err != nil {
+	//	log.Fatal("error connecting to db: ", err)
+	//}
+	//queries := db.Queries{}
+
+	server, err := api.NewServer(testQueries)
 	if err != nil {
 		log.Fatal("error creating gin server: ", err)
 	}
